@@ -85,15 +85,9 @@ class Clouds {
         this.y = Math.random()*(canvas.height*0.4) + (canvas.height*0.1)
         this.dx = Math.random()*wind * (Math.random() < 0.5 ? -1 : 1)
         this.opacity = Math.random()
+        this.height = minmaxgenerator(maxCloudHeight*0.7, minCloudHeight)
 
-        this.points = []
-        const npoints = Math.floor(Math.random()*5)+1
-        for (let i = 0; i < npoints; i++) {
-            this.points.push(minmaxgenerator(maxCloudHeight, minCloudHeight))
-        }
-        this.points.push(0)
-
-        console.log(this)
+        this.npoints = Math.floor(Math.random()*3)+2
     }
 
     draw() {
@@ -108,10 +102,15 @@ class Clouds {
         c.lineTo(this.x+this.width, this.y)
         c.stroke()
 
-        for (let i = 0; i < this.points.length; i++) {
-            const x = this.width*(this.points.length - i - 1) / this.points.length
+        for (let i = 0; i < this.npoints; i++) {
+            const x = this.width*(this.npoints - i - 1) / this.npoints
             const cx = this.x+x+(x/2)
-            c.quadraticCurveTo(cx, this.y - maxCloudHeight, this.x+x, this.y - this.points[i])
+            if (i == this.npoints - 1) {
+                c.quadraticCurveTo(cx, this.y - maxCloudHeight, this.x+x, this.y)
+                c.stroke()
+                break
+            }
+            c.quadraticCurveTo(cx, this.y - maxCloudHeight, this.x+x, this.y - this.height)
             c.stroke()
         }
 
@@ -137,28 +136,32 @@ function startRain() {
     for (let i = 0; i < clouds.length; i++) {
         clouds[i].draw()
     }
-    
+
 
     for (let i = 0; i < rain.length; i++) {
         rain[i].drop()
     }
 
+    // Umbrella
     c.beginPath();
     c.lineWidth = 8
-    // c.moveTo(mouse.x, mouse.y)
     c.arc(mouse.x - umbrellaHandleRadius, mouse.y, umbrellaHandleRadius, 0, Math.PI)
     c.stroke();
 
     c.lineWidth = 4
     c.beginPath()
     c.moveTo(mouse.x, mouse.y)
-    c.lineTo(mouse.x, mouse.y-umbrellaHeight)
+    c.lineTo(mouse.x, mouse.y-umbrellaHeight-umbrellaRadius/6)
     c.stroke();
 
     c.lineWidth = 2
     c.fillStyle = 'rgba(0, 0, 0, 0.3)'
+    c.beginPath()
     c.arc(mouse.x, mouse.y-umbrellaHeight, umbrellaRadius, 0, Math.PI, true)
-    c.lineTo(mouse.x, mouse.y-umbrellaHeight)
+    c.quadraticCurveTo(mouse.x - (umbrellaRadius*2/3), mouse.y-umbrellaHeight-umbrellaRadius/3, mouse.x-(umbrellaRadius/3), mouse.y - umbrellaHeight)
+    c.quadraticCurveTo(mouse.x, mouse.y-umbrellaHeight-umbrellaRadius/3, mouse.x+(umbrellaRadius/3), mouse.y-umbrellaHeight)
+    c.quadraticCurveTo(mouse.x + (umbrellaRadius*2/3), mouse.y-umbrellaHeight-umbrellaRadius/3, 
+    mouse.x+umbrellaRadius, mouse.y-umbrellaHeight)
     c.stroke();
     c.fill();
 
