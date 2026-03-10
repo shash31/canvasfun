@@ -32,6 +32,13 @@ c.strokeStyle = 'black' // Umbrella
 
 const mouse = {x: null, y: null};
 
+window.addEventListener('resize', () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    init();
+    startRain();
+})
+
 window.addEventListener('mousemove', (e) => {mouse.x = e.clientX; mouse.y = e.clientY})
 
 function minmaxgenerator(max, min) {
@@ -118,17 +125,22 @@ class Clouds {
     }
 }
 
-const rain = []
+let rain;
+let clouds;
 
-for (let i = 0; i < 200; i++) {
-    rain.push(new Drops())
+function init() {
+    rain = []
+    for (let i = 0; i < 200; i++) {
+        rain.push(new Drops())
+    }
+
+    clouds = []
+    for (let i = 0; i < 8; i++) {
+        clouds.push(new Clouds())
+    }
 }
 
-const clouds = []
-
-for (let i = 0; i < 8; i++) {
-    clouds.push(new Clouds())
-}
+init();
 
 function startRain() {
     c.clearRect(0, 0, canvas.width, canvas.height)
