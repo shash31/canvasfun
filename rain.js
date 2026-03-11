@@ -30,7 +30,7 @@ const raincolor = '#c4c4c4' // Rain
 
 c.strokeStyle = 'black' // Umbrella
 
-const mouse = {x: null, y: null};
+const mouse = {x: undefined, y: undefined};
 
 window.addEventListener('resize', () => {
     canvas.width = window.innerWidth;
@@ -62,7 +62,8 @@ class Drops {
     drop() {
         if (this.y <= canvas.height) {
             if (this.x < mouse.x + umbrellaRadius && this.x > mouse.x - umbrellaRadius
-                && this.y >= mouse.y - umbrellaHeight - umbrellaRadius - 15
+                && this.y >= mouse.y - umbrellaHeight - umbrellaRadius - 15 && 
+                this.y <= mouse.y - umbrellaHeight
             ) {
                 if (this.x < mouse.x) { 
                     this.dx = -1.5
